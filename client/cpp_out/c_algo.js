@@ -27,7 +27,7 @@ Module['ready'] = new Promise(function(resolve, reject) {
   readyPromiseResolve = resolve;
   readyPromiseReject = reject;
 });
-["_free","_malloc","_reply","_add","_sub","_union_area","_print_int","_print_arr","_fflush","onRuntimeInitialized"].forEach((prop) => {
+["_free","_malloc","_get_union_area","_reply","_add","_sub","_union_area","_print_int","_print_arr","_fflush","onRuntimeInitialized"].forEach((prop) => {
   if (!Object.getOwnPropertyDescriptor(Module['ready'], prop)) {
     Object.defineProperty(Module['ready'], prop, {
       get: () => abort('You are getting ' + prop + ' on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js'),
@@ -833,7 +833,7 @@ function createExportWrapper(name, fixedasm) {
 }
 
 var wasmBinaryFile;
-  wasmBinaryFile = 'add.wasm';
+  wasmBinaryFile = 'c_algo.wasm';
   if (!isDataURI(wasmBinaryFile)) {
     wasmBinaryFile = locateFile(wasmBinaryFile);
   }
@@ -4311,6 +4311,10 @@ var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = createExportWrapper("__wasm_call_ctors");
 /** @type {function(...*):?} */
+var _get_union_area = Module["_get_union_area"] = createExportWrapper("get_union_area");
+/** @type {function(...*):?} */
+var _union_area = Module["_union_area"] = createExportWrapper("union_area");
+/** @type {function(...*):?} */
 var _reply = Module["_reply"] = createExportWrapper("reply");
 /** @type {function(...*):?} */
 var _print_int = Module["_print_int"] = createExportWrapper("print_int");
@@ -4320,8 +4324,6 @@ var _print_arr = Module["_print_arr"] = createExportWrapper("print_arr");
 var _add = Module["_add"] = createExportWrapper("add");
 /** @type {function(...*):?} */
 var _sub = Module["_sub"] = createExportWrapper("sub");
-/** @type {function(...*):?} */
-var _union_area = Module["_union_area"] = createExportWrapper("union_area");
 /** @type {function(...*):?} */
 var ___errno_location = createExportWrapper("__errno_location");
 /** @type {function(...*):?} */

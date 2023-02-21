@@ -1,11 +1,3 @@
-// emcc t.cpp -o test/t.html
-// #define WASM_EXPORT __attribute__((visibility(“default”)))
-// WASM_EXPORT
-// int add(int a, int b) {
-//   return a + b;
-// }
-// https://www.boost.org/doc/libs/1_53_0/libs/geometry/doc/html/geometry/reference/algorithms/union_.html
-// emcc union.cpp -o test/union.html
 #include <iostream>
 #include <vector>
 #include <string>
@@ -25,12 +17,10 @@ extern "C"
   double fixed_union_area();
   double union_area(string a, string b);
 }
-// string a = "POLYGON((2 1.3,2.4 1.7,2.8 1.8,3.4 1.2,3.7 1.6,3.4 2,4.1 3,5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0))";
-// string b = "POLYGON((4.0 -0.5 , 3.5 1.0 , 2.0 1.5 , 3.5 2.0 , 4.0 3.5 , 4.5 2.0 , 6.0 1.5 , 4.5 1.0 , 4.0 -0.5))";
-// string a = "POLYGON((110 10 110 210 310 210 310 10))";
+
 int main()
 {
-fixed_union_area();
+  fixed_union_area();
   // int a[5] = {1000, 2, 3, 17, 50};
   // cout << print_str();
   // print_int(2);
@@ -45,7 +35,8 @@ extern "C"
 {
   double get_union_area(const char *a, const char *b)
   {
-    printf("w_re%sand%s\n", a, b);
+    printf("w_getArea...\n");
+    printf("%s\n%s\n", a, b);
     double area = union_area(a, b);
     printf("w_area");
     printf("w_area:%f", area);
@@ -53,7 +44,6 @@ extern "C"
   }
   const char *reply(const char *chr)
   {
-    // cout << "reply: " <<chr;
     printf("w_re%s\n", chr);
     return "hi man";
   }
@@ -67,7 +57,6 @@ extern "C"
   }
   void print_arr(char *buf)
   {
-    // cout << "a_arr: " << a[0];
     cout << "a_arr: " << buf;
   }
   int add(int a, int b)
@@ -87,17 +76,19 @@ extern "C"
 
     boost::geometry::read_wkt(
         // "POLYGON((2 1.3,2.4 1.7,2.8 1.8,3.4 1.2,3.7 1.6,3.4 2,4.1 3,5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0))"
-                        "POLYGON((0 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0))"
+        "POLYGON((0 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0))"
 
         // "POLYGON((0 0 0 10 10 210 310 10))"
-        , green);
+        ,
+        green);
 
     boost::geometry::read_wkt(
         // "POLYGON((4.0 -0.5 , 3.5 1.0 , 2.0 1.5 , 3.5 2.0 , 4.0 3.5 , 4.5 2.0 , 6.0 1.5 , 4.5 1.0 , 4.0 -0.5))"
-                "POLYGON((5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0))"
+        "POLYGON((5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0))"
 
         // "POLYGON((19 37 19 237 319 237 319 37))"
-        , blue);
+        ,
+        blue);
 
     std::vector<polygon> output;
     boost::geometry::union_(green, blue, output);

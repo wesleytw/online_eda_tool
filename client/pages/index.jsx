@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import Head from "next/head"
-import Module from '../cpp_out/add';
-// import Snap from "snapsvg";
+import Module from '../cpp_out/c_algo';
+import { offset } from 'svg-polygon-points';
 
+// let polys = ["10,10 10,210 310,210 310,10", "110,10 110,210 510,210 510,10"]
+let polys = ["0,0 0,100 100,100 100,0", "0,0 0,100 100,100 100,0"]
+
+let pointsNow = { p1: polys[0], p2: polys[1] }
+let p1, p2
+let s1, s2
 const App = () => {
+  const [test, settest] = useState("0");
+  const [svgs, setsvgs] = useState({ p1: "300 0 , 300 100 , 400 100 , 400 0", p2: "300 0 , 300 200 , 400 200 " })
 
-  const [test, settest] = useState();
-  const [first, setfirst] = useState()
   async function getSnap() {
     let { default: Snap } = await import('snapsvg-cjs')
     // console.log("Snap", Snap)
-    const s = Snap("#svg")
-    var bigSquare = s.rect(100, 100, 200, 200);
-    var topLeft = s.circle(100, 100, 7);
-    var topRight = s.circle(300, 100, 7);
-    var bottomRight = s.circle(300, 300, 7);
-    var bottomLeft = s.circle(100, 300, 7);
-
-    bigSquare.attr({
-      fill: "#fff",
-      stroke: "#000",
-      strokeWidth: 5
-    });
+    s1 = Snap("#s1")
+    s2 = Snap("#s2")
+    p1 = s1.polygon(polys[0])
+    p1.attr({ fill: "yellow", stroke: "green", id: "p1" });
+    p2 = s2.polygon(polys[1])
+    p2.attr({ fill: "blue", stroke: "green", id: "p2" });
     var dragStart = function (x, y, e) {
       // console.log("dragStart",this)
 
@@ -35,162 +35,29 @@ const App = () => {
     };
 
     var dragMove = function (dx, dy, x, y, e) {
-      console.log("dragMove", this[0].node)
+      // console.log("dragMove", this, this[0].node, e)
+      // console.log(s1.node.innerHTML.polygon)
+
       // Inspect cursor to determine which resize/move process to use
       switch (this.attr("cursor")) {
-        case "nw-resize":
-          this[0].attr({
-            x: e.offsetX,
-            y: e.offsetY,
-            width: this.ow - dx,
-            height: this.oh - dy
-          });
-
-          this[1].attr({
-            //topLeft nw
-            cx: e.offsetX,
-            cy: e.offsetY
-          });
-
-          this[2].attr({
-            //topRight  ne
-            cx: e.offsetX + (this.ow - dx),
-            cy: e.offsetY
-          });
-
-          this[3].attr({
-            //bottomRight   se
-            cx: e.offsetX + (this.ow - dx),
-            cy: e.offsetY + (this.oh - dy)
-          });
-
-          this[4].attr({
-            //bottomLeft  sw
-            cx: e.offsetX,
-            cy: e.offsetY + (this.oh - dy)
-          });
-          break;
-
-        case "ne-resize":
-          this[0].attr({
-            y: e.offsetY,
-            width: e.offsetX - this.ox,
-            height: this.oh - dy
-          });
-
-          this[1].attr({
-            //topLeft nw
-            cx: e.offsetX - this.ow - dx,
-            cy: e.offsetY
-          });
-
-          this[2].attr({
-            //topRight  ne
-            cx: e.offsetX,
-            cy: e.offsetY
-          });
-
-          this[3].attr({
-            //bottomRight   se
-            cx: e.offsetX,
-            cy: e.offsetY + (this.oh - dy)
-          });
-
-          this[4].attr({
-            //bottomLeft  sw
-            cx: e.offsetX - this.ow - dx,
-            cy: e.offsetY + (this.oh - dy)
-          });
-          break;
-
-        case "se-resize":
-          this[0].attr({
-            width: e.offsetX - this.ox,
-            height: e.offsetY - this.oy
-          });
-
-          this[1].attr(
-            {
-              //topLeft
-              //no changes
-            }
-          );
-
-          this[2].attr({
-            //topRight
-            cx: e.offsetX
-          });
-
-          this[3].attr({
-            //bottomRight
-            cx: e.offsetX,
-            cy: e.offsetY
-          });
-
-          this[4].attr({
-            //bottomLeft
-            cy: e.offsetY
-          });
-
-          break;
-
-        case "sw-resize":
-          this[0].attr({
-            x: e.offsetX,
-            width: this.ow - dx,
-            height: e.offsetY - this.oy
-          });
-
-          this[1].attr({
-            cx: e.offsetX
-          });
-
-          this[3].attr({
-            cy: e.offsetY
-          });
-
-          this[4].attr({
-            //bottomLeft  works
-            cx: e.offsetX,
-            cy: e.offsetY
-          });
-          break;
-
         default:
           this[0].attr({
-            x: e.offsetX - this.ow * 0.5,
-            y: e.offsetY - this.oh * 0.5
-          });
-
-          this[1].attr({
-            //topLeft
-            cx: e.offsetX - this.ow * 0.5,
-            cy: e.offsetY - this.oh * 0.5
-          });
-
-          this[2].attr({
-            //topRight
-            cx: e.offsetX + this.ow * 0.5,
-            cy: e.offsetY - this.oh * 0.5
-          });
-
-          this[3].attr({
-            //bottomRight
-            cx: e.offsetX + this.ow * 0.5,
-            cy: e.offsetY + this.oh * 0.5
-          });
-
-          this[4].attr({
             //bottomLeft
-            cx: e.offsetX - this.ow * 0.5,
-            cy: e.offsetY + this.oh * 0.5
+            // cx: e.offsetX - this.ow * 0.5,
+            // cy: e.offsetY + this.oh * 0.5
+            _x: polys[0],
+            // points: offset(this[5].node.attributes[0].value, e.offsetX - this.ow, e.offsetY - this.oh)
+            points: offset(polys[0], e.offsetX, e.offsetY)
           });
+          // console.log("AAA", this[0].node.attributes[0].value, e.offsetX, e.offsetY, e.offsetX - this.ow)
           break;
       }
     };
 
     var dragEnd = function () {
       this.dragging = false;
+      console.log("dragEnd", this, this[0].node.attributes.points.value, this[0].node.attributes.id.value)
+      pointsNow[this[0].node.attributes.id.value] = this[0].node.attributes.points.value
     };
 
     var changeCursor = function (e, mouseX, mouseY) {
@@ -199,111 +66,114 @@ const App = () => {
         return;
       }
 
-      // X,Y Coordinates relative to shape's orgin
-      var relativeX = mouseX - this[0].attr("x");
-      var relativeY = mouseY - this[0].attr("y");
-
-      var shapeWidth = this[0].attr("width");
-      var shapeHeight = this[0].attr("height");
-
-      var resizeBorder = 10;
-
-      // Change cursor
-      if (relativeX < resizeBorder && relativeY < resizeBorder) {
-        this.attr("cursor", "nw-resize");
-      } else if (
-        relativeX > shapeWidth - resizeBorder &&
-        relativeY < resizeBorder
-      ) {
-        this.attr("cursor", "ne-resize");
-      } else if (
-        relativeX > shapeWidth - resizeBorder &&
-        relativeY > shapeHeight - resizeBorder
-      ) {
-        this.attr("cursor", "se-resize");
-      } else if (
-        relativeX < resizeBorder &&
-        relativeY > shapeHeight - resizeBorder
-      ) {
-        this.attr("cursor", "sw-resize");
-      } else {
-        this.attr("cursor", "move");
-      }
-    };
-    var dropTargetGroup = s.group(
-      bigSquare,
-      topLeft,
-      topRight,
-      bottomRight,
-      bottomLeft
+      this.attr("cursor", "move");
+    }
+    var sGroup = s1.group(
+      p1
     );
-    dropTargetGroup.mousemove(changeCursor);
-    dropTargetGroup.drag(dragMove, dragStart, dragEnd);
+    sGroup.mousemove(changeCursor);
+    sGroup.drag(dragMove, dragStart, dragEnd);
+
+    var s2Group = s2.group(
+      p2
+    );
+    s2Group.mousemove(changeCursor);
+    s2Group.drag(dragMove, dragStart, dragEnd);
+
+  }
+  let showPoints = function () {
+    console.log("showPoints", pointsNow)
   }
   useEffect(() => {
     getSnap()
 
   }, [])
 
-
-  // const handleClick = (e: React.MouseEvent) => {
-  //   console.log('clicked', e.currentTarget)
-  // }
-  async function loadModule() {
+  async function union() {
     const module = await Module();
-    const res = module.ccall("add", "number", ["number", "number"], [1, 2]);
-    settest(res)
-    // let ptr = Uint8Array.from(Array.from("text"))
-    // let ptr2 = Buffer.from("ddddx")
-    // let b = "1,2,3 4".split`,`.map(x => +x)
-
-    // const names = "1,2,3 4";
-    // const nameList = names.replace(' ', ',').split(',').map(x => +x);
-
-    var input = "hello";   //生成字符串  
-		var input_ptr = module.allocateUTF8(input);  //生成字符串的指针  
-		var retPtr = module._reply(input_ptr);  //调用c方法  
-		var resValue = module.UTF8ToString(retPtr);  //将返回指针转成字符串  
-		// document.getElementById("showtext").value = resValue;//显示  
-		module._free(input_ptr);//释放返回指针  
-    console.log("OO",input_ptr,resValue)
+    // let a = "POLYGON((-11 19.3,2.4 1.7,2.8 1.8,3.4 1.2,3.7 1.6,3.4 2,4.1 3,5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0))";
+    // let b = "POLYGON((4.0 -0.5 , 3.5 1.0 , 2.0 1.5 , 3.5 2.0 , 4.0 3.5 , 4.5 2.0 , 6.0 1.5 , 4.5 1.0 , 4.0 -0.5))";
+    // pointsNow.p1 = "(2 1.3,2.4 1.7,2.8 1.8,3.4 1.2,3.7 1.6,3.4 2,4.1 3,5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0)"
+    let a = "POLYGON((" + pointsNow.p1.replaceAll(",", " ") + "))"
+    let b = "POLYGON((" + pointsNow.p2.replaceAll(",", " ") + "))"
+    let da = "POLYGON((" + pointsNow.p1.replaceAll(",", ".").replaceAll(" ", " , ").replaceAll(".", " ") + "))"
+    let db = "POLYGON((" + pointsNow.p2.replaceAll(",", ".").replaceAll(" ", " , ").replaceAll(".", " ") + "))"
+    let a_ptr = await module.allocateUTF8(da);
+    let b_ptr = await module.allocateUTF8(db);
+    const area = await module._get_union_area(a_ptr, b_ptr);
+    settest(area)
+    // console.log(pointsNow.p1,area,"POLYGON((" + pointsNow.p1.replace(","," ") + "))")
+    console.log(pointsNow, a, b, a_ptr, b_ptr, area)
+    await module._free(a_ptr, b_ptr);
   }
-  // loadModule();
-  // async function tt(){
-  //     const instance = await Module();
-  //     // 直接使用
-  //     // instance._add(1,5);
-  //     // cwrap 注册后使用
-  //     const add = instance.cwrap("add", "number",["number","number"]);
-  //     console.log("cwrap: ", add(1,2),instance._add(1,5));
-  //     // 直接使用ccall
-  //     console.log("ccall: ", instance.ccall("add","number", ["number","number"], [1,2]));
-  // }
-  // tt();
+
+  async function submit_union(e) {
+    e.preventDefault()
+    console.log(svgs)
+    const module = await Module();
+    let a = "POLYGON((" + svgs.p1 + "))"
+    let b = "POLYGON((" + svgs.p2 + "))"
+    let a_ptr = await module.allocateUTF8(a);
+    let b_ptr = await module.allocateUTF8(b);
+    const area = await module._get_union_area(a_ptr, b_ptr);
+    settest(area)
+    // console.log(pointsNow.p1,area,"POLYGON((" + pointsNow.p1.replace(","," ") + "))")
+    console.log(
+      //  a, b,
+      a_ptr, b_ptr, area)
+    await module._free(a_ptr, b_ptr);
+  }
+
+  async function typing(event) {
+    const name = event.target.name;
+    const value = event.target.value;
+    setsvgs(values => ({ ...values, [name]: value }))
+  }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen p-4">
       <Head>
         <title>Degen EDA</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <button className="btn" onClick={() => loadModule()}>add(1+2)</button>
-      <h1 className=" ">{test}</h1>
-      <svg width="400" height="200">
-        <polygon
+      <button className="btn m-4" onClick={() => union()}>union</button>
+      <h1 className=" text-3xl font-mono font-bold m-4">area:{test}</h1>
+      {/* <button className="btn" onClick={() => showPoints()}>consloe.log svg points</button> */}
+      <svg width="100vw" height="400px" className=' m-4 border-2'>
+        {/* <polygon
           id="po"
-          // points="200,10 250,190 160,180"
+          // points="(2 1.3,2.4 1.7,2.8 1.8,3.4 1.2,3.7 1.6,3.4 2,4.1 3,5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0)"
           points={[[200, 10], [250, 190], [160, 180]]}
-          style={{ fill: "lime", stroke: "purple", ["stroke-width"]: 1 }}
+          style={{ fill: "lime", stroke: "purple", strokeWidth: 1 }}
+        /> */}
+        <svg
+          id="s1"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
         />
+        <svg
+          id="s2"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+        />
+        <polygon points={svgs.p1} fill='#fff' stroke="#008000" id="p1" ></polygon>
+        <polygon points={svgs.p2} fill='#fff' stroke="#dc0909" id="p2" ></polygon>
       </svg>
-      <svg
-        id="svg"
-        height="100vh"
-        width="100vw"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-      />
+      <form action="" className=" w-full" onSubmit={submit_union}>
+        <div className="form-control m-4 w-full">
+          <label className="input-group input-group-sm">
+            <span>green(100*100)</span>
+            <input name="p1" type="text" value={"" || svgs.p1} onChange={(e) => typing(e)} placeholder="Type here" className="w-full input input-bordered input-sm" />
+          </label>
+        </div>
+        <div className="form-control m-4 w-full">
+          <label className="input-group input-group-sm">
+            <span>red</span>
+            <input name="p2" type="text" value={"" || svgs.p2} onChange={(e) => typing(e)} placeholder="Type here" className="w-full  input input-bordered input-sm" />
+          </label>
+        </div>
+        <input type="submit" className='btn mx-4' />
+      </form>
     </div>
   );
 }

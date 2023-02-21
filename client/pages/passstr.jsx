@@ -1,20 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from "next/head"
 import Module from '../cpp_out/c_algo';
-// import Snap from "snapsvg";
-import { offset } from 'svg-polygon-points';
+
 const App = () => {
-  const po = useRef()
+
   const [test, settest] = useState();
   const [first, setfirst] = useState()
-  var p
   async function getSnap() {
     let { default: Snap } = await import('snapsvg-cjs')
-    console.log("Snap", Snap)
+    // console.log("Snap", Snap)
     const s = Snap("#svg")
-    let c = "110,10 110,230 80,30"
-    p = s.polygon(c)
-    p.attr({ fill: "yellow", stroke: "green" });
     var bigSquare = s.rect(100, 100, 200, 200);
     var topLeft = s.circle(100, 100, 7);
     var topRight = s.circle(300, 100, 7);
@@ -39,7 +34,7 @@ const App = () => {
     };
 
     var dragMove = function (dx, dy, x, y, e) {
-      console.log("dragMove", this, this[0].node, e)
+      console.log("dragMove", this[0].node)
       // Inspect cursor to determine which resize/move process to use
       switch (this.attr("cursor")) {
         case "nw-resize":
@@ -189,15 +184,6 @@ const App = () => {
             cx: e.offsetX - this.ow * 0.5,
             cy: e.offsetY + this.oh * 0.5
           });
-          this[5].attr({
-            //bottomLeft
-            // cx: e.offsetX - this.ow * 0.5,
-            // cy: e.offsetY + this.oh * 0.5
-            _x: "110,10 110,230 80,30",
-            // points: offset(this[5].node.attributes[0].value, e.offsetX - this.ow, e.offsetY - this.oh)
-            points: offset(c, e.offsetX - this.ow, e.offsetY - this.oh)
-          });
-          console.log("AAA", this[5].node.attributes[0].value, e.offsetX, e.offsetY, e.offsetX - this.ow)
           break;
       }
     };
@@ -248,8 +234,7 @@ const App = () => {
       topLeft,
       topRight,
       bottomRight,
-      bottomLeft,
-      p
+      bottomLeft
     );
     dropTargetGroup.mousemove(changeCursor);
     dropTargetGroup.drag(dragMove, dragStart, dragEnd);
@@ -259,16 +244,25 @@ const App = () => {
 
   }, [])
 
-
   async function loadModule() {
     const module = await Module();
     const res = module.ccall("add", "number", ["number", "number"], [1, 2]);
     settest(res)
-    console.log('add result:', res, module._add(1, 5));
-    console.log("union", module._union_area())
-    // ,module._add(1,5)
+    let a = "POLYGON((2 1.3,2.4 1.7,2.8 1.8,3.4 1.2,3.7 1.6,3.4 2,4.1 3,5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0))";
+    let b = "POLYGON((4.0 -0.5 , 3.5 1.0 , 2.0 1.5 , 3.5 2.0 , 4.0 3.5 , 4.5 2.0 , 6.0 1.5 , 4.5 1.0 , 4.0 -0.5))";
+    let a_ptr = module.allocateUTF8(a);
+    let b_ptr = module.allocateUTF8(b);
+    const area = module._get_union_area(a_ptr, b_ptr);
+    console.log("area",area)
+    module._free(a_ptr, a_ptr);//释放返回指针  
+    // var input = "hello";   //生成字符串  
+    // var input_ptr = module.allocateUTF8(input);  //生成字符串的指针  
+    // var retPtr = module._reply(input_ptr);  //调用c方法  
+    // var resValue = module.UTF8ToString(retPtr);  //将返回指针转成字符串  
+    // document.getElementById("showtext").value = resValue;//显示  
+    // module._free(input_ptr);//释放返回指针  
+    // console.log("OO", input_ptr, resValue)
   }
-
 
   return (
     <div className="min-h-screen">
@@ -277,35 +271,14 @@ const App = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <button className="btn" onClick={() => loadModule()}>add(1+2)</button>
-      <button className="btn" onClick={() => {
-        let pa = [...po.current.points].map(seg => `${seg.x},${seg.y}`).join(' ')
-        let n = offset(pa, 9, 6)
-        console.log(po.current
-          // ,po.current.points
-          , pa
-          , n
-          // ,p.attr.points
-        );
-        // po.current.points=n
-        po.current.setAttribute("points", n);
-
-      }}>po</button>
       <h1 className=" ">{test}</h1>
       <svg width="400" height="200">
         <polygon
           id="po"
-          ref={po}
           // points="200,10 250,190 160,180"
           points={[[200, 10], [250, 190], [160, 180]]}
-          style={{ fill: "lime", stroke: "purple", strokeWidth: 1 }}
+          style={{ fill: "lime", stroke: "purple", ["stroke-width"]: 1 }}
         />
-        {/* <polygon
-          id="po2"
-          // ref={po}
-          points="20 1 250 190 160 180"
-          // points={[[200, 10], [250, 190], [160, 180]]}
-          style={{ fill: "lime", stroke: "purple", strokeWidth: 1 }}
-        /> */}
       </svg>
       <svg
         id="svg"
