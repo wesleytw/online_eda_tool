@@ -8,8 +8,8 @@ const App = () => {
   const [test, settest] = useState();
   const [first, setfirst] = useState()
   async function getSnap() {
-    let {default:Snap} = await import('snapsvg-cjs')
-    console.log("Snap", Snap)
+    let { default: Snap } = await import('snapsvg-cjs')
+    // console.log("Snap", Snap)
     const s = Snap("#svg")
     var bigSquare = s.rect(100, 100, 200, 200);
     var topLeft = s.circle(100, 100, 7);
@@ -22,7 +22,7 @@ const App = () => {
       stroke: "#000",
       strokeWidth: 5
     });
-    var dragStart = function(x, y, e) {
+    var dragStart = function (x, y, e) {
       // console.log("dragStart",this)
 
       // Save some starting values
@@ -34,8 +34,8 @@ const App = () => {
       this.dragging = true;
     };
 
-    var dragMove = function(dx, dy, x, y, e) {
-      console.log("dragMove",this[0].node)
+    var dragMove = function (dx, dy, x, y, e) {
+      console.log("dragMove", this[0].node)
       // Inspect cursor to determine which resize/move process to use
       switch (this.attr("cursor")) {
         case "nw-resize":
@@ -189,19 +189,19 @@ const App = () => {
       }
     };
 
-    var dragEnd = function() {
+    var dragEnd = function () {
       this.dragging = false;
     };
 
-    var changeCursor = function(e, mouseX, mouseY) {
+    var changeCursor = function (e, mouseX, mouseY) {
       // Don't change cursor during a drag operation
       if (this.dragging === true) {
         return;
       }
 
       // X,Y Coordinates relative to shape's orgin
-      var relativeX = mouseX  - this[0].attr("x");
-      var relativeY = mouseY  - this[0].attr("y");
+      var relativeX = mouseX - this[0].attr("x");
+      var relativeY = mouseY - this[0].attr("y");
 
       var shapeWidth = this[0].attr("width");
       var shapeHeight = this[0].attr("height");
@@ -253,9 +253,20 @@ const App = () => {
     const module = await Module();
     const res = module.ccall("add", "number", ["number", "number"], [1, 2]);
     settest(res)
-    console.log('add result:', res, module._add(1, 5));
-    console.log("union", module._union_area())
-    // ,module._add(1,5)
+    // let ptr = Uint8Array.from(Array.from("text"))
+    // let ptr2 = Buffer.from("ddddx")
+    // let b = "1,2,3 4".split`,`.map(x => +x)
+
+    // const names = "1,2,3 4";
+    // const nameList = names.replace(' ', ',').split(',').map(x => +x);
+
+    var input = "hello";   //生成字符串  
+		var input_ptr = module.allocateUTF8(input);  //生成字符串的指针  
+		var retPtr = module._reply(input_ptr);  //调用c方法  
+		var resValue = module.UTF8ToString(retPtr);  //将返回指针转成字符串  
+		// document.getElementById("showtext").value = resValue;//显示  
+		module._free(input_ptr);//释放返回指针  
+    console.log("OO",input_ptr,resValue)
   }
   // loadModule();
   // async function tt(){
@@ -280,7 +291,7 @@ const App = () => {
       <h1 className=" ">{test}</h1>
       <svg width="400" height="200">
         <polygon
-        id="po"
+          id="po"
           // points="200,10 250,190 160,180"
           points={[[200, 10], [250, 190], [160, 180]]}
           style={{ fill: "lime", stroke: "purple", ["stroke-width"]: 1 }}

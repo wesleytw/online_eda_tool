@@ -27,7 +27,7 @@ Module['ready'] = new Promise(function(resolve, reject) {
   readyPromiseResolve = resolve;
   readyPromiseReject = reject;
 });
-["_add","_sub","_union_area","_fflush","onRuntimeInitialized"].forEach((prop) => {
+["_free","_malloc","_reply","_add","_sub","_union_area","_print_int","_print_arr","_fflush","onRuntimeInitialized"].forEach((prop) => {
   if (!Object.getOwnPropertyDescriptor(Module['ready'], prop)) {
     Object.defineProperty(Module['ready'], prop, {
       get: () => abort('You are getting ' + prop + ' on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js'),
@@ -313,13 +313,6 @@ function assert(condition, text) {
 
 // We used to include malloc/free by default in the past. Show a helpful error in
 // builds with assertions.
-function _malloc() {
-  abort("malloc() called but not included in the build - add '_malloc' to EXPORTED_FUNCTIONS");
-}
-function _free() {
-  // Show a helpful error since we used to include free by default in the past.
-  abort("free() called but not included in the build - add '_free' to EXPORTED_FUNCTIONS");
-}
 
 // include: runtime_strings.js
 // runtime_strings.js: String related runtime functions that are part of both
@@ -4121,6 +4114,13 @@ function unexportedRuntimeSymbol(sym) {
     }
 
 
+  function allocateUTF8(str) {
+      var size = lengthBytesUTF8(str) + 1;
+      var ret = _malloc(size);
+      if (ret) stringToUTF8Array(str, HEAP8, ret, size);
+      return ret;
+    }
+
   var FSNode = /** @constructor */ function(parent, name, mode, rdev) {
     if (!parent) {
       parent = this;  // root node sets parent to itself
@@ -4311,6 +4311,12 @@ var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = createExportWrapper("__wasm_call_ctors");
 /** @type {function(...*):?} */
+var _reply = Module["_reply"] = createExportWrapper("reply");
+/** @type {function(...*):?} */
+var _print_int = Module["_print_int"] = createExportWrapper("print_int");
+/** @type {function(...*):?} */
+var _print_arr = Module["_print_arr"] = createExportWrapper("print_arr");
+/** @type {function(...*):?} */
 var _add = Module["_add"] = createExportWrapper("add");
 /** @type {function(...*):?} */
 var _sub = Module["_sub"] = createExportWrapper("sub");
@@ -4320,6 +4326,10 @@ var _union_area = Module["_union_area"] = createExportWrapper("union_area");
 var ___errno_location = createExportWrapper("__errno_location");
 /** @type {function(...*):?} */
 var _fflush = Module["_fflush"] = createExportWrapper("fflush");
+/** @type {function(...*):?} */
+var _malloc = Module["_malloc"] = createExportWrapper("malloc");
+/** @type {function(...*):?} */
+var _free = Module["_free"] = createExportWrapper("free");
 /** @type {function(...*):?} */
 var _emscripten_stack_init = function() {
   return (_emscripten_stack_init = Module["asm"]["emscripten_stack_init"]).apply(null, arguments);
@@ -4368,8 +4378,10 @@ var dynCall_iiiiiijj = Module["dynCall_iiiiiijj"] = createExportWrapper("dynCall
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
 
+Module["UTF8ToString"] = UTF8ToString;
 Module["ccall"] = ccall;
 Module["cwrap"] = cwrap;
+Module["allocateUTF8"] = allocateUTF8;
 var missingLibrarySymbols = [
   'stringToNewUTF8',
   'exitJS',
@@ -4437,7 +4449,6 @@ var missingLibrarySymbols = [
   'UTF32ToString',
   'stringToUTF32',
   'lengthBytesUTF32',
-  'allocateUTF8',
   'allocateUTF8OnStack',
   'writeStringToMemory',
   'getSocketFromFD',
@@ -4522,7 +4533,6 @@ missingLibrarySymbols.forEach(missingLibrarySymbol)
 var unexportedSymbols = [
   'run',
   'UTF8ArrayToString',
-  'UTF8ToString',
   'stringToUTF8Array',
   'stringToUTF8',
   'lengthBytesUTF8',
