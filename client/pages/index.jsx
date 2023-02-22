@@ -19,9 +19,9 @@ const App = () => {
     s1 = Snap("#s1")
     s2 = Snap("#s2")
     p1 = s1.polygon(polys[0])
-    p1.attr({ fill: "yellow", stroke: "green", id: "p1" });
+    p1.attr({ fill: "yellow", stroke: "green", id: "p1", "fill-opacity":"0.6" });
     p2 = s2.polygon(polys[1])
-    p2.attr({ fill: "blue", stroke: "green", id: "p2" });
+    p2.attr({ fill: "blue", stroke: "green", id: "p2", "fill-opacity":"0.6" });
     var dragStart = function (x, y, e) {
       // console.log("dragStart",this)
 
@@ -136,16 +136,9 @@ const App = () => {
         <title>Degen EDA</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <button className="btn m-4" onClick={() => union()}>union</button>
+      <button className="btn normal-case m-4" onClick={() => union()}>UNION (blue||yellow)</button>
       <h1 className=" text-3xl font-mono font-bold m-4">area:{test}</h1>
-      {/* <button className="btn" onClick={() => showPoints()}>consloe.log svg points</button> */}
       <svg width="100vw" height="400px" className=' m-4 border-2'>
-        {/* <polygon
-          id="po"
-          // points="(2 1.3,2.4 1.7,2.8 1.8,3.4 1.2,3.7 1.6,3.4 2,4.1 3,5.3 2.6,5.4 1.2,4.9 0.8,2.9 0.7,2 1.3)(4.0 2.0, 4.2 1.4, 4.8 1.9, 4.4 2.2, 4.0 2.0)"
-          points={[[200, 10], [250, 190], [160, 180]]}
-          style={{ fill: "lime", stroke: "purple", strokeWidth: 1 }}
-        /> */}
         <svg
           id="s1"
           version="1.1"
@@ -156,8 +149,8 @@ const App = () => {
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
         />
-        <polygon points={svgs.p1} fill='#fff' stroke="#008000" id="p1" ></polygon>
-        <polygon points={svgs.p2} fill='#fff' stroke="#dc0909" id="p2" ></polygon>
+        <polygon points={svgs.p1} fill='#008000' fill-opacity="0.4" stroke="#008000" id="p1" ></polygon>
+        <polygon points={svgs.p2} fill='#dc0909' fill-opacity="0.4" stroke="#dc0909" id="p2" ></polygon>
       </svg>
       <form action="" className=" w-full" onSubmit={submit_union}>
         <div className="form-control m-4 w-full">
