@@ -4,14 +4,14 @@ import Module from '../cpp_out/c_algo';
 import { offset } from 'svg-polygon-points';
 
 // let polys = ["10,10 10,210 310,210 310,10", "110,10 110,210 510,210 510,10"]
-let polys = ["0,0 0,100 100,100 100,0", "0,0 0,100 100,100 100,0"]
+let polys = ["0,0 0,100 100,100 100,0 0,0", "0,0 0,100 100,100 100,0 0,0"]
 
 let pointsNow = { p1: polys[0], p2: polys[1] }
 let p1, p2
 let s1, s2
 const App = () => {
   const [test, settest] = useState("0");
-  const [svgs, setsvgs] = useState({ p1: "300 0 , 300 100 , 400 100 , 400 0", p2: "300 0 , 300 200 , 400 200 " })
+  const [svgs, setsvgs] = useState({ p1: "300 0 , 300 100 , 400 100 , 400 0 , 300 0", p2: "300 0 , 300 200 , 400 200 , 300 0" })
 
   async function getSnap() {
     let { default: Snap } = await import('snapsvg-cjs')
