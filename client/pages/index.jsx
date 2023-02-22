@@ -19,9 +19,9 @@ const App = () => {
     s1 = Snap("#s1")
     s2 = Snap("#s2")
     p1 = s1.polygon(polys[0])
-    p1.attr({ fill: "yellow", stroke: "green", id: "p1", "fill-opacity":"0.6" });
+    p1.attr({ fill: "yellow", stroke: "green", id: "p1", fillOpacity:"0.6" });
     p2 = s2.polygon(polys[1])
-    p2.attr({ fill: "blue", stroke: "green", id: "p2", "fill-opacity":"0.6" });
+    p2.attr({ fill: "blue", stroke: "green", id: "p2", fillOpacity:"0.6" });
     var dragStart = function (x, y, e) {
       // console.log("dragStart",this)
 
@@ -37,7 +37,8 @@ const App = () => {
     var dragMove = function (dx, dy, x, y, e) {
       // console.log("dragMove", this, this[0].node, e)
       // console.log(s1.node.innerHTML.polygon)
-
+      pointsNow[this[0].node.attributes.id.value] = this[0].node.attributes.points.value
+      union()
       // Inspect cursor to determine which resize/move process to use
       switch (this.attr("cursor")) {
         default:
@@ -57,7 +58,8 @@ const App = () => {
     var dragEnd = function () {
       this.dragging = false;
       console.log("dragEnd", this, this[0].node.attributes.points.value, this[0].node.attributes.id.value)
-      pointsNow[this[0].node.attributes.id.value] = this[0].node.attributes.points.value
+      // pointsNow[this[0].node.attributes.id.value] = this[0].node.attributes.points.value
+      // union()
     };
 
     var changeCursor = function (e, mouseX, mouseY) {
@@ -103,7 +105,7 @@ const App = () => {
     const area = await module._get_union_area(a_ptr, b_ptr);
     settest(area)
     // console.log(pointsNow.p1,area,"POLYGON((" + pointsNow.p1.replace(","," ") + "))")
-    console.log(pointsNow, a, b, a_ptr, b_ptr, area)
+    // console.log(pointsNow, a, b, a_ptr, b_ptr, area)
     await module._free(a_ptr, b_ptr);
   }
 
