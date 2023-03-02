@@ -19,9 +19,9 @@ const App = () => {
     s1 = Snap("#s1")
     s2 = Snap("#s2")
     p1 = s1.polygon(polys[0])
-    p1.attr({ fill: "yellow", stroke: "green", id: "p1", fillOpacity:"0.6" });
+    p1.attr({ fill: "yellow", stroke: "green", id: "p1", fillOpacity: "0.6" });
     p2 = s2.polygon(polys[1])
-    p2.attr({ fill: "blue", stroke: "green", id: "p2", fillOpacity:"0.6" });
+    p2.attr({ fill: "blue", stroke: "green", id: "p2", fillOpacity: "0.6" });
     var dragStart = function (x, y, e) {
       // console.log("dragStart",this)
 
@@ -138,37 +138,61 @@ const App = () => {
         <title>Degen EDA</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <button className="btn normal-case m-4" onClick={() => union()}>UNION (blue||yellow)</button>
-      <h1 className=" text-3xl font-mono font-bold m-4">area:{test}</h1>
-      <svg width="100vw" height="400px" className=' m-4 border-2'>
-        <svg
-          id="s1"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-        />
-        <svg
-          id="s2"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-        />
-        <polygon points={svgs.p1} fill='#008000' fill-opacity="0.4" stroke="#008000" id="p1" ></polygon>
-        <polygon points={svgs.p2} fill='#dc0909' fill-opacity="0.4" stroke="#dc0909" id="p2" ></polygon>
-      </svg>
-      <form action="" className=" w-full" onSubmit={submit_union}>
-        <div className="form-control m-4 w-full">
-          <label className="input-group input-group-sm">
-            <span>green(100*100)</span>
-            <input name="p1" type="text" value={"" || svgs.p1} onChange={(e) => typing(e)} placeholder="Type here" className="w-full input input-bordered input-sm" />
-          </label>
-        </div>
-        <div className="form-control m-4 w-full">
-          <label className="input-group input-group-sm">
-            <span>red</span>
-            <input name="p2" type="text" value={"" || svgs.p2} onChange={(e) => typing(e)} placeholder="Type here" className="w-full  input input-bordered input-sm" />
-          </label>
-        </div>
-        <input type="submit" className='btn mx-4' />
-      </form>
+
+      {/* <button className="btn normal-case m-4" onClick={() => union()}>UNION (blue||yellow)</button> */}
+      <div className=" font-mono">
+        <h1 className=" text-5xl mx-4 bg-white">Demo 1</h1>
+        <p className=" mx-4 bg-white">This section shows how JavaScript calculate the union area through WebAssembly.
+          <br /> Area calculation algorithm is based on <a href="" className=" underline">Boost C++ graph library</a>.
+          <br /> Observation: the speed of calculation is extremly faster than pure JS implementation.
+          <br /> Usage: drag the blue and the yellow blocks to get the union area of these two blocks, or input the specific coordinates of the green and red blocks.
+        </p>
+        <h1 className=" text-3xl bg-white font-bold mx-4">area:{test}</h1>
+        <svg width="50vw" height="400px" className=' m-4 border-2'>
+          <svg
+            id="s1"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+          />
+          <svg
+            id="s2"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+          />
+          <polygon points={svgs.p1} fill='#008000' fill-opacity="0.4" stroke="#008000" id="p1" ></polygon>
+          <polygon points={svgs.p2} fill='#dc0909' fill-opacity="0.4" stroke="#dc0909" id="p2" ></polygon>
+        </svg>
+        <form action="" className=" w-full" onSubmit={submit_union}>
+          <div className="form-control m-4 w-3/5">
+            <label className="input-group input-group-sm">
+              <span>green(100*100)</span>
+              <input name="p1" type="text" value={"" || svgs.p1} onChange={(e) => typing(e)} placeholder="Type here" className="w-full input input-bordered input-sm" />
+            </label>
+          </div>
+          <div className="form-control m-4 w-3/5">
+            <label className="input-group input-group-sm">
+              <span>red</span>
+              <input name="p2" type="text" value={"" || svgs.p2} onChange={(e) => typing(e)} placeholder="Type here" className="w-full  input input-bordered input-sm" />
+            </label>
+          </div>
+          <input type="submit" value="(red||green) area " className='btn mx-4' />
+        </form>
+      </div>
+      <div className=" font-mono my-4">
+        <h1 className=" text-5xl mx-4 bg-white">Demo 2</h1>
+        <img src="/proj1.png" alt="" className=" mx-4 w-[500px]" />
+        <p className=" m-4 mb-0 pb-4 bg-white">
+          Solution: <br />
+          step 1. <br />
+          use MULTIPOLYGON to group all blockages. <br />
+          step 2. <br />
+          use boost::geometry::envelope to get the enclosing rectangle. <br />
+          step 3. <br />
+          set the pins and display SVG. <br />
+          Source code: <a href="https://github.com/wesleytw/course_projects/blob/master/proj1/formal_proj/proj1.cpp" className=" underline">https://github.com/wesleytw/course_projects/blob/master/proj1/formal_proj/proj1.cpp</a>
+        </p>
+        <img src="/s1.png" alt="" className=" mx-4 w-[600px]" />
+      </div>
     </div>
   );
 }
