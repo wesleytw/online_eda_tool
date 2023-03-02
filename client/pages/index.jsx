@@ -138,6 +138,7 @@ const App = () => {
         <title>Degen EDA</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
+      <p className=" m-4 mt-0">Author: <a href="https://github.com/wesleytw/online_eda_tool" className=" underline">Wesley Liu</a> (wesliutw@gmail.com)</p>
 
       {/* <button className="btn normal-case m-4" onClick={() => union()}>UNION (blue||yellow)</button> */}
       <div className=" font-mono">
